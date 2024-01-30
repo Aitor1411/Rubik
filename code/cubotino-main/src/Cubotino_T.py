@@ -342,8 +342,9 @@ def import_libraries():
         time.sleep(5)                                     # delay to let user the time to read the display
         quit_func(quit_script=True)                       # script is quitted
 
-
-
+    # importing CFOP solver
+    import pytwisty
+    from pytwisty import rubiks_cube
 
 
 
@@ -2009,7 +2010,7 @@ def scrambling_cube():
     cc.randomize()                  # randomized cube in cubie reppresentation 
     random_cube_string = str(cc.to_facelet_cube())   # randomized cube in facelets string reppresentation
     print("Random cube status:", random_cube_string) # feedback is printed to the terminal
-    solution, solution_Text = cube_solution(random_cube_string, scrambling = True) # Kociemba solver is called to have the solution string
+    solution, solution_Text = cube_solution(algorithm_type, random_cube_string, scrambling = True) # Kociemba solver is called to have the solution string
     print(solution_Text)            # feedback is printed to the terminal
     
     # dict and string with robot movements, and total movements
@@ -2097,7 +2098,7 @@ def scrambling_cube():
 
 
 
-def cube_solution(cube_string, scrambling=False):
+def cube_solution(algorithm_type, cube_string, scrambling=False):
     """ Calls the Hegbert Kociemba solver, and returns the solution's moves
     from: https://github.com/hkociemba/RubiksCube-TwophaseSolver 
     (Solve Rubik's Cube in less than 20 moves on average with Python)
@@ -2109,8 +2110,11 @@ def cube_solution(cube_string, scrambling=False):
 #     sv_max_time = 2       #(AF 2)   # solver parameter: timeout of 2 seconds, if not solution within max moves
    
 
-    s = sv.solve(cube_string, sv_max_moves, sv_max_time)  # solver is called
-
+    if algorithm_type == "kociemba":
+        s = sv.solve(cube_string, sv_max_moves, sv_max_time)  # kociemba solver is called
+    elif algorithm_type =="cfop":
+        cube = rubiks_cube.RubiksCube(cube_string)
+        s = cube.solve()
     
 #################  solveto function to reach a wanted cube target from a known starting cube status   ######
 #     cube_sts = 'UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB'
@@ -3751,6 +3755,7 @@ def cubeAF():
     global sides, side, prev_side, faces, BGR_mean, H_mean, URFDLB_facelets_BGR_mean      # cube status detection related variables
     global font, fontScale, fontColor, lineType                                           # cv2 text related variables
     global servo, robot_stop, robot_idle, timeout, detect_timeout                         # robot related variables
+    global algorithm_type = "kociemba"  # Indicamos si el algoritmo que queremos utilizar es "kociemba" o "cfop"
 
 
     robot_idle = False                              # robot is not anymore idling
@@ -3864,7 +3869,7 @@ def cubeAF():
                         # cube string status with colors detected 
                         cube_status, HSV_detected, cube_color_seq, HSV_analysis = cube_colors_interpr(URFDLB_facelets_BGR_mean)
                         cube_status_string = cube_string(cube_status)                 # cube string for the solver
-                        solution, solution_Text = cube_solution(cube_status_string)   # Kociemba solver is called to have the solution string
+                        solution, solution_Text = cube_solution(algorithm_type, cube_status_string)   # Kociemba solver is called to have the solution string
                         color_detection_winner='BGR'                                  # variable used to log which method gave the solution
                         cube_solution_time=time.time()                                # time stored after getting the cube solution
                         print(f'\nCube status (via BGR color distance): {cube_status_string}')   # feedback is printed to the terminal
