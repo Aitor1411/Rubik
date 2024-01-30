@@ -3,7 +3,7 @@
 
 """ 
 #############################################################################################################
-#  Andrea Favero, 15 October 2023
+#  Nerea Doncel, Milena Galán, Kristian Sanz, Aitor Zubiaurre 30 January 2024
 #
 #  This code relates to CUBOTino autonomous, a very small and simple Rubik's cube solver robot 3D printed.
 #  CUBOTino autonomous is the 'Top version', of the CUBOTino robot series.
@@ -14,8 +14,11 @@
 #  Many functions of this code have been developed on 2021, for my previous robot (https://youtu.be/oYRXe4NyJqs).
 #
 #  The cube status is detected via a camera system (piCamera) and OpenCV .
-#  Kociemba solver is used foer the cube solution (from: https://github.com/hkociemba/RubiksCube-TwophaseSolver)
+#  The user can decide which solver is going to use. In this moment Kociemba and CFOP (Fridrich) are availabel
+#  but it is possible to import another rubik algorithm and select it to the resolution
+#  Kociemba solver used foer the cube solution (from: https://github.com/hkociemba/RubiksCube-TwophaseSolver)
 #  Credits to Mr. Kociemba for his great job !
+#  CFOP (Fridrich) 
 #  Search for CUBOTino autonomous on www.instructables.com, to find more info about this robot.
 #
 #  Developped on:
