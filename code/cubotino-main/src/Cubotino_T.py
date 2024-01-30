@@ -3,7 +3,9 @@
 
 """ 
 #############################################################################################################
-#  Nerea Doncel, Milena Galán, Kristian Sanz, Aitor Zubiaurre 30 January 2024
+#  Andrea Favero, 15 October 2023
+#  * Multialgorithm adaptation implemented by:
+#        - Nerea Doncel, Milena Galán, Kristian Sanz, Aitor Zubiaurre 30 January 2024
 #
 #  This code relates to CUBOTino autonomous, a very small and simple Rubik's cube solver robot 3D printed.
 #  CUBOTino autonomous is the 'Top version', of the CUBOTino robot series.
@@ -14,11 +16,14 @@
 #  Many functions of this code have been developed on 2021, for my previous robot (https://youtu.be/oYRXe4NyJqs).
 #
 #  The cube status is detected via a camera system (piCamera) and OpenCV .
-#  The user can decide which solver is going to use. In this moment Kociemba and CFOP (Fridrich) are availabel
-#  but it is possible to import another rubik algorithm and select it to the resolution
-#  Kociemba solver used foer the cube solution (from: https://github.com/hkociemba/RubiksCube-TwophaseSolver)
+#  The user can decide which solver is going to use. In this moment Kociemba, CFOP (Fridrich) and Beginner algorithm are available
+#  but it is possible to import another rubik algorithm and select it to the resolution.
+#  Actual options (incorpored in 2024):
+#  OPTION_1: Kociemba solver used foer the cube solution (from: https://github.com/hkociemba/RubiksCube-TwophaseSolver)
 #  Credits to Mr. Kociemba for his great job !
-#  CFOP (Fridrich) 
+#  OPTION_2: CFOP (Fridrich)
+#  OPTION_3: Beginner
+#  More information: https://copyprogramming.com/howto/python-rubiks-cube-solver
 #  Search for CUBOTino autonomous on www.instructables.com, to find more info about this robot.
 #
 #  Developped on:
@@ -345,9 +350,8 @@ def import_libraries():
         time.sleep(5)                                     # delay to let user the time to read the display
         quit_func(quit_script=True)                       # script is quitted
 
-    # importing CFOP solver
-    import pytwisty
-    from pytwisty import rubiks_cube
+    # importing CFOP and Beginner algorithm solver
+    from rubik_solver import utils
 
 
 
@@ -2102,9 +2106,12 @@ def scrambling_cube():
 
 
 def cube_solution(algorithm_type, cube_string, scrambling=False):
-    """ Calls the Hegbert Kociemba solver, and returns the solution's moves
+    """ Calls the algorith type depending the user selecion:
+    1) Hegbert Kociemba solver, and returns the solution's moves
     from: https://github.com/hkociemba/RubiksCube-TwophaseSolver 
     (Solve Rubik's Cube in less than 20 moves on average with Python)
+    2) CFOP (Fridrich) algorithm
+    3) Beginner algorith
     The returned string is slightly manipulated to have the moves amount at the start."""
     
     if not scrambling:
@@ -2116,9 +2123,10 @@ def cube_solution(algorithm_type, cube_string, scrambling=False):
     if algorithm_type == "kociemba":
         s = sv.solve(cube_string, sv_max_moves, sv_max_time)  # kociemba solver is called
     elif algorithm_type =="cfop":
-        cube = rubiks_cube.RubiksCube(cube_string)
-        s = cube.solve()
-    
+        s = utils.solve(cube, 'CFOP')
+    elif algorithm_type =="beginner":
+        s = utils.solve(cube, 'beginner')
+        
 #################  solveto function to reach a wanted cube target from a known starting cube status   ######
 #     cube_sts = 'UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB'
 #     cube_target = 'UDUDUDUDURLRLRLRLRFBFBFBFBFDUDUDUDUDLRLRLRLRLBFBFBFBFB'
@@ -3758,7 +3766,9 @@ def cubeAF():
     global sides, side, prev_side, faces, BGR_mean, H_mean, URFDLB_facelets_BGR_mean      # cube status detection related variables
     global font, fontScale, fontColor, lineType                                           # cv2 text related variables
     global servo, robot_stop, robot_idle, timeout, detect_timeout                         # robot related variables
-    global algorithm_type = "kociemba"  # Indicamos si el algoritmo que queremos utilizar es "kociemba" o "cfop"
+    # Changes implemented in 30 January 2024
+    global algorithm_type = "kociemba"  # Indicate if the resolution algorith is "kociemba", "cfop" or "beginner"
+                                        # more information here: https://copyprogramming.com/howto/python-rubiks-cube-solver
 
 
     robot_idle = False                              # robot is not anymore idling
