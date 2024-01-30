@@ -1,0 +1,31 @@
+/**
+ * index.scss
+ * - Add any styles you want here!
+ */
+div.titulo {
+  background: lightgray
+  }
+h1 {color: black}
+h2 {color: gray}
+
+body {
+  background: gray;
+}
+iframe {
+  background: #ff5;
+}
+
+div.sketchfab-embed-wrapper {
+  margin: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Esto asegura que el contenedor ocupe al menos el 100% de la altura de la ventana. */
+}
+
+.centrado {
+  text-align: center; /* Alinea el contenido del div al centro. */
+  border: 20px solid #ccc; /* Agrega un borde para visualización. */
+  padding: 20px; /* Agrega espacio interno para que el contenido no esté pegado a los bordes. */
+}
+
